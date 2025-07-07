@@ -30,8 +30,50 @@ async function readMemo () {
 function displayMemos(memo) {
     const ul = document.querySelector("#memo-ul");
     const li = document.createElement("li");
-    li.innerText = `id:${memo.id}, content:${memo.content}`;
+    const editBtn = document.createElement("button");
+    const delBtn = document.createElement("button");
+    li.innerText = memo.content;
+    editBtn.textContent = "수정하기";
+    editBtn.dataset.id = memo.id;
+    editBtn.addEventListener("click", editMemo);
+
+    delBtn.textContent = "삭제";
+    delBtn.addEventListener("click",deleteMemo);
+    delBtn.dataset.id = memo.id;
+ 
     ul.appendChild(li);
+    ul.appendChild(editBtn);
+    ul.appendChild(delBtn);
+
+}
+
+async function deleteMemo(e) {
+    const id = e.target.dataset.id;
+
+    const res = await fetch(`/memo/${id}`, {
+        method: "DELETE",
+    });
+    readMemo();
+}
+
+async function editMemo(e) {
+    const id = e.target.dataset.id;
+    const editInput = prompt("수정할 내용을 입력해주세요.");
+    console.log(editInput);
+
+    const res = await fetch(`/memo/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-type": "application/json",
+        },
+        body: JSON.stringify({ // 문자열로 바꿔줌 -> 통신할 때 문자열로 바꿔줘야함
+            id: id,
+            content: editInput,
+        })
+    });
+    
+    readMemo();
+    
 
 }
 
