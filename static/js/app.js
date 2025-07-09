@@ -7,7 +7,7 @@ async function createMemo (value) {
             "Content-type": "application/json",
         },
         body: JSON.stringify({ // 문자열로 바꿔줌 -> 통신할 때 문자열로 바꿔줘야함
-            id: new Date().getTime(),
+            time: new Date().getTime(),
             content: value,
         })
     });
@@ -21,6 +21,8 @@ async function createMemo (value) {
 async function readMemo () {
     const res = await fetch('/memo')
     const jsonRes = await res.json();
+
+    console.log(res);
     const ul = document.querySelector("#memo-ul");
     ul.innerHTML = "";
     jsonRes.forEach(displayMemos); // 배열 뒤에 forEach 로 각각 동작, 출력하도록
@@ -34,12 +36,12 @@ function displayMemos(memo) {
     const delBtn = document.createElement("button");
     li.innerText = memo.content;
     editBtn.textContent = "수정하기";
-    editBtn.dataset.id = memo.id;
+    editBtn.dataset.id = memo._id;
     editBtn.addEventListener("click", editMemo);
 
     delBtn.textContent = "삭제";
     delBtn.addEventListener("click",deleteMemo);
-    delBtn.dataset.id = memo.id;
+    delBtn.dataset.id = memo._id;
  
     ul.appendChild(li);
     ul.appendChild(editBtn);
@@ -67,7 +69,7 @@ async function editMemo(e) {
             "Content-type": "application/json",
         },
         body: JSON.stringify({ // 문자열로 바꿔줌 -> 통신할 때 문자열로 바꿔줘야함
-            id: id,
+            time: new Date().getTime(),
             content: editInput,
         })
     });
